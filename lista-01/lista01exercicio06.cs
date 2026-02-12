@@ -4,13 +4,13 @@ using System;
 
 class Program
 {
-    static void Main()
-    {
-        Console.Write("Digite um número: ");
-        int numero = int.Parse(Console.ReadLine());
-
-        int digitos = numero.ToString().Length;
-
-        Console.WriteLine($"O número de dígitos é: {digitos}");
-    }
+	static void Main()
+	{
+		Console.WriteLine("Numero:");
+		long num = long.Parse(Console.ReadLine());
+		
+		int dig = num.ToString().Length;
+		
+		Console.WriteLine($"{num} possuí {dig} digitos");
+	}
 }
