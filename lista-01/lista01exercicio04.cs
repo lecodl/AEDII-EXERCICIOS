@@ -17,11 +17,15 @@ class Program
 	{
 		Console.WriteLine("Nome do produto");
 		string nome = Console.ReadLine();
+		
 		Console.WriteLine("Quantidade do produto");
 		int quant = int.Parse(Console.ReadLine());
+		
 		Console.WriteLine("Preço do produto");
 		double preco = double.Parse(Console.ReadLine());
+		
 		double total = preco * quant;
+		
 		if (quant >= 11 && quant <= 20)
 			total *= 0.9;
 		else if (quant >= 21 && quant <= 50)
