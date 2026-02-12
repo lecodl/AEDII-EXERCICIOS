@@ -13,27 +13,21 @@ using System;
 
 class Program
 {
-    static void Main()
-    {
-        Console.Write("Produto: ");
-        string nome = Console.ReadLine();
-
-        Console.Write("Preço: ");
-        double preco = double.Parse(Console.ReadLine());
-
-        Console.Write("Quantidade comprada: ");
-        int quantidade = int.Parse(Console.ReadLine());
-
-        double total = preco * quantidade;
-
-        if (quantidade >= 11 && quantidade <= 20)
-            total *= 0.9; // 10% de desconto
-        else if (quantidade >= 21 && quantidade <= 50)
-            total *= 0.8; // 20% de desconto
-        else if (quantidade > 50)
-            total *= 0.75; // 25% de desconto
-
-        Console.WriteLine($"Produto: {nome}");
-        Console.WriteLine($"Valor total a pagar: {total:F2}");
-    }
+	static void Main()
+	{
+		Console.WriteLine("Nome do produto");
+		string nome = Console.ReadLine();
+		Console.WriteLine("Quantidade do produto");
+		int quant = int.Parse(Console.ReadLine());
+		Console.WriteLine("Preço do produto");
+		double preco = double.Parse(Console.ReadLine());
+		double total = preco * quant;
+		if (quant >= 11 && quant <= 20)
+			total *= 0.9;
+		else if (quant >= 21 && quant <= 50)
+			total *= 0.8;
+		else if (quant > 50)
+			total *= 0.75;
+		Console.WriteLine($"O valor de {quant} unidades de {nome} deu {total}");
+	}
 }
