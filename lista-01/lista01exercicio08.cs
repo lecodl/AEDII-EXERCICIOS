@@ -15,7 +15,7 @@ class Program
 		
 		for (int i = 0; i <= num; i++)
 		{
-			Console.WriteLine($"{a}");
+			Console.Write(a + " ");
 			int proximo = (a+b);
 			a = b;
 			b = proximo;
