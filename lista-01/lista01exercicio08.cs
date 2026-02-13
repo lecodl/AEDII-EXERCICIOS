@@ -7,22 +7,18 @@ using System;
 
 class Program
 {
-    static void Main()
-    {
-        Console.Write("Digite um número inteiro não negativo: ");
-        int n = int.Parse(Console.ReadLine());
-
-        long a = 0, b = 1;
-
-        for (int i = 0; i <= n; i++)
-        {
-            Console.Write(a);
-            if (i < n) Console.Write(", ");
-            long proximo = a + b;
-            a = b;
-            b = proximo;
-        }
-
-        Console.WriteLine();
-    }
+	static void Main()
+	{
+		Console.WriteLine("Numero:");
+		int num = int.Parse(Console.ReadLine());
+		int a = 0; int b = 1;
+		
+		for (int i = 0; i <= num; i++)
+		{
+			Console.WriteLine($"{a}");
+			int proximo = (a+b);
+			a = b;
+			b = proximo;
+		}
+	}
 }
