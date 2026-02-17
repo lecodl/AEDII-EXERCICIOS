@@ -17,8 +17,8 @@ class Program
 {
     static void Main()
     {
-        Console.Write("Valor a ser investido por mês: ");
-        double aporte = double.Parse(Console.ReadLine());
+        Console.Write("Valor investido por mês: ");
+        double din = double.Parse(Console.ReadLine());
 
         Console.Write("Taxa de juros mensal (em %): ");
         double taxa = double.Parse(Console.ReadLine()) / 100.0;
@@ -30,8 +30,8 @@ class Program
         {
             for (int mes = 1; mes <= 12; mes++)
             {
-                saldo += aporte;          // adiciona o aporte mensal
-                saldo += saldo * taxa;    // aplica o juro do mês
+                saldo += din;
+                saldo += saldo * taxa;
             }
 
             Console.WriteLine($"Saldo do investimento após 1 ano: {saldo}");
