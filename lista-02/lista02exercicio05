@@ -13,35 +13,27 @@ using System;
 
 class Retangulo
 {
-    protected double Base { get; set; }
-    protected double Altura { get; set; }
-
-    protected double Area
+    double Base { get; set; }
+    double Altura { get; set; }
+    double Area
     {
         get { return Base * Altura; }
     }
 
-    protected void Dados()
+    Retangulo(double b, double h)
+    {
+        Base = b;
+        Altura = h;
+    }
+
+    void ExibirDados()
     {
         Console.WriteLine("Dados:");
         Console.WriteLine($"Base: {Base}");
         Console.WriteLine($"Altura: {Altura}");
-        Console.WriteLine($"Area: {Area}");
+        Console.WriteLine($"Área: {Area}");
     }
-}
 
-class RetanguloMain : Retangulo
-{
-    internal void Executar(double b, double h)
-    {
-        Base = b;
-        Altura = h;
-        Dados();
-    }
-}
-
-class Program
-{
     static void Main()
     {
         Console.WriteLine("Base:");
@@ -50,7 +42,7 @@ class Program
         Console.WriteLine("Altura:");
         double alturaInp = double.Parse(Console.ReadLine());
 
-        RetanguloMain ret = new RetanguloMain();
-        ret.Executar(baseInp, alturaInp);
+        Retangulo ret = new Retangulo(baseInp, alturaInp);
+        ret.ExibirDados();
     }
 }
