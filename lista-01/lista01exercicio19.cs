@@ -1,82 +1,110 @@
-// Identifique as classes e implemente um programa para a seguinte especificação: “O
-// supermercado vende diferentes tipos de produtos. Cada produto tem um preço e uma
-// quantidade em estoque. Um pedido de um cliente é composto de itens, onde cada item
-// especifica o produto que o cliente deseja e a respectiva quantidade. Esse pedido pode ser
-// pago em dinheiro, cheque ou cartão.”
-
 using System;
 using System.Collections.Generic;
 
-enum TipoPagamento
-{
-    Dinheiro = 1,
-    Cheque,
-    Cartao
-}
-
 class Produto
 {
-    public string Nome;
-    public double Preco;
-    public int Estoque;
+    int id;
+    string nome;
+    double preco;
+    int estoque;
 
-    public Produto(string nome, double preco, int estoque)
+    internal Produto(int i, string n, double p, int e)
     {
-        Nome = nome;
-        Preco = preco;
-        Estoque = estoque;
+        id = i;
+        nome = n;
+        preco = p;
+        estoque = e;
+    }
+
+    internal int GetId() { return id; }
+    internal string GetNome() { return nome; }
+    internal double GetPreco() { return preco; }
+    internal int GetEstoque() { return estoque; }
+
+    internal void BaixarEstoque(int qtd)
+    {
+        estoque -= qtd;
+    }
+
+    internal void Mostrar()
+    {
+        Console.WriteLine("Id: " + id +
+                          " | Nome: " + nome +
+                          " | Preco: " + preco +
+                          " | Estoque: " + estoque);
     }
 }
 
 class ItemPedido
 {
-    public Produto Produto;
-    public int Quantidade;
+    Produto produto;
+    int quantidade;
 
-    public ItemPedido(Produto produto, int quantidade)
+    internal ItemPedido(Produto p, int q)
     {
-        Produto = produto;
-        Quantidade = quantidade;
+        produto = p;
+        quantidade = q;
     }
 
-    public double ValorItem()
+    internal double SubTotal()
     {
-        return Produto.Preco * Quantidade;
+        return produto.GetPreco() * quantidade;
+    }
+
+    internal void AtualizarEstoque()
+    {
+        produto.BaixarEstoque(quantidade);
     }
 }
 
 class Pedido
 {
-    public List<ItemPedido> Itens = new List<ItemPedido>();
-    public TipoPagamento Pagamento;
+    List<ItemPedido> itens = new List<ItemPedido>();
 
-    public Pedido(TipoPagamento pagamento)
+    internal void AdicionarItem(ItemPedido item)
     {
-        Pagamento = pagamento;
+        itens.Add(item);
+        item.AtualizarEstoque();
     }
 
-    public void AdicionarItem(ItemPedido item)
-    {
-        if (item.Quantidade <= item.Produto.Estoque)
-        {
-            Itens.Add(item);
-            item.Produto.Estoque -= item.Quantidade;
-            Console.WriteLine($"{item.Quantidade} x {item.Produto.Nome} adicionado ao pedido.");
-        }
-        else
-        {
-            Console.WriteLine("Estoque insuficiente para " + item.Produto.Nome);
-        }
-    }
-
-    public double Total()
+    internal double Total()
     {
         double total = 0;
-        foreach (var item in Itens)
-        {
-            total += item.ValorItem();
-        }
+        foreach (ItemPedido i in itens)
+            total += i.SubTotal();
         return total;
+    }
+}
+
+class Pagamento
+{
+    internal virtual void Pagar(double valor)
+    {
+        Console.WriteLine("Pagamento realizado: " + valor);
+    }
+}
+
+class Dinheiro : Pagamento
+{
+    internal override void Pagar(double valor)
+    {
+        Console.WriteLine("Pago em dinheiro: " + valor);
+    }
+}
+
+class Cheque : Pagamento
+{
+    internal override void Pagar(double valor)
+    {
+        Console.WriteLine("Pago em cheque: " + valor);
+    }
+}
+
+class Cartao : Pagamento
+{
+    internal override void Pagar(double valor)
+    {
+        Console.WriteLine("Pago em cartao: " + valor);
     }
 }
 
@@ -84,51 +112,71 @@ class Program
 {
     static void Main()
     {
-        List<Produto> produtos = new List<Produto>()
-        {
-            new Produto("Arroz", 20.0, 50),
-            new Produto("Feijão", 8.0, 30),
-            new Produto("Macarrão", 5.0, 40),
-            new Produto("Coca", 9.0, 60)
-        };
+        List<Produto> produtos = new List<Produto>();
 
-        Console.WriteLine("Produtos disponíveis:");
+        produtos.Add(new Produto(1, "Arroz", 20, 50));
+        produtos.Add(new Produto(2, "Feijao", 10, 40));
+        produtos.Add(new Produto(3, "Macarrao", 8, 30));
 
-        foreach (var p in produtos)
-        {
-            Console.WriteLine($"{produtos.IndexOf(p) + 1} - {p.Nome} (Preço: R${p.Preco}, Estoque: {p.Estoque})");
-        }
-
-        Console.WriteLine("Forma de pagamento: 1-Dinheiro  2-Cheque  3-Cartão");
-        TipoPagamento pagamento = (TipoPagamento)int.Parse(Console.ReadLine());
-
-        Pedido pedido = new Pedido(pagamento);
+        Pedido pedido = new Pedido();
 
         while (true)
         {
-            Console.WriteLine("Digite o número do produto que deseja comprar (0 para finalizar):");
-            int escolha = int.Parse(Console.ReadLine());
+            Console.WriteLine("\n1-Adicionar Item");
+            Console.WriteLine("2-Finalizar Pedido");
 
-            if (escolha == 0)
-                break;
+            int op;
+            int.TryParse(Console.ReadLine(), out op);
 
-            if (escolha < 1 || escolha > produtos.Count)
+            if (op == 1)
             {
-                Console.WriteLine("Produto inválido.");
-                continue;
+                Console.WriteLine("\nProdutos disponiveis:");
+                foreach (Produto p in produtos)
+                    p.Mostrar();
+
+                Console.Write("Id produto: ");
+                int id;
+                int.TryParse(Console.ReadLine(), out id);
+
+                Console.Write("Quantidade: ");
+                int qtd;
+                int.TryParse(Console.ReadLine(), out qtd);
+
+                Produto prod = produtos.Find(x => x.GetId() == id);
+
+                if (prod != null && prod.GetEstoque() >= qtd)
+                {
+                    pedido.AdicionarItem(new ItemPedido(prod, qtd));
+                    Console.WriteLine("Item adicionado.");
+                }
+                else
+                {
+                    Console.WriteLine("Erro.");
+                }
             }
+            else if (op == 2)
+            {
+                double total = pedido.Total();
+                Console.WriteLine("Total: " + total);
 
-            Produto produtoSelecionado = produtos[escolha - 1];
+                Console.WriteLine("1-Dinheiro 2-Cheque 3-Cartao");
+                int tipo;
+                int.TryParse(Console.ReadLine(), out tipo);
 
-            Console.WriteLine($"Digite a quantidade de {produtoSelecionado.Nome}:");
-            int quantidade = int.Parse(Console.ReadLine());
+                Pagamento pag = null;
 
-            ItemPedido item = new ItemPedido(produtoSelecionado, quantidade);
-            pedido.AdicionarItem(item);
+                if (tipo == 1)
+                    pag = new Dinheiro();
+                else if (tipo == 2)
+                    pag = new Cheque();
+                else if (tipo == 3)
+                    pag = new Cartao();
+
+                if (pag != null)
+                    pag.Pagar(total);
+
+                break;
+            }
         }
-
-        Console.WriteLine($"Total do pedido: R${pedido.Total()}");
-        Console.WriteLine($"Pagamento escolhido: {pedido.Pagamento}");
-        Console.WriteLine("Obrigado por comprar conosco!");
     }
 }
