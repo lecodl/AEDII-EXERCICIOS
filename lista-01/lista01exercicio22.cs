@@ -1,42 +1,52 @@
-// Faça uma programa para representar a árvore genealógica de uma família. Para tal, crie
-// uma classe Pessoa que permita indicar, além de nome e idade, o pai e a mãe. Tenha em
-// mente que pai e mãe também são do tipo Pessoa.
-
 using System;
 using System.Collections.Generic;
 
 class Pessoa
 {
-    public string Nome;
-    public int Idade;
-    public Pessoa Pai;
-    public Pessoa Mae;
+    string nome;
+    int idade;
+    Pessoa pai;
+    Pessoa mae;
 
-    public Pessoa(string nome, int idade)
+    internal Pessoa(string nome, int idade)
     {
-        Nome = nome;
-        Idade = idade;
+        this.nome = nome;
+        this.idade = idade;
     }
 
-    public void MostrarArvore(int nivel = 0)
-    {
-        string indent = new string(' ', nivel * 4); // recuo
-        Console.WriteLine($"{indent}- {Nome} ({Idade} anos)");
+    internal string Nome() { return nome; }
+    internal int Idade() { return idade; }
 
-        if (Pai != null)
+    internal void SetPai(Pessoa p)
+    {
+        pai = p;
+    }
+
+    internal void SetMae(Pessoa m)
+    {
+        mae = m;
+    }
+
+    internal void MostrarArvore(int nivel)
+    {
+        string espaco = new string(' ', nivel * 4);
+        Console.WriteLine(espaco + "- " + nome + " (" + idade + " anos)");
+
+        if (pai != null)
         {
-            Console.WriteLine($"{indent}  Pai:");
-            Pai.MostrarArvore(nivel + 1);
+            Console.WriteLine(espaco + "  Pai:");
+            pai.MostrarArvore(nivel + 1);
         }
-        if (Mae != null)
+
+        if (mae != null)
         {
-            Console.WriteLine($"{indent}  Mãe:");
-            Mae.MostrarArvore(nivel + 1);
+            Console.WriteLine(espaco + "  Mae:");
+            mae.MostrarArvore(nivel + 1);
         }
     }
 }
 
-class Programa
+class Program
 {
     static List<Pessoa> pessoas = new List<Pessoa>();
 
@@ -44,74 +54,68 @@ class Programa
     {
         while (true)
         {
-            Console.WriteLine("Árvore Genealógica");
-            Console.WriteLine("1 - Cadastrar pessoa");
+            Console.WriteLine("\n1 - Cadastrar pessoa");
             Console.WriteLine("2 - Listar pessoas");
-            Console.WriteLine("3 - Mostrar árvore de uma pessoa");
-            Console.Write("Escolha uma opção: ");
+            Console.WriteLine("3 - Mostrar arvore");
 
-            string opcao = Console.ReadLine();
+            string op = Console.ReadLine();
 
-            switch (opcao)
-            {
-                case "1":
-                    CadastrarPessoa();
-                    break;
-                case "2":
-                    ListarPessoas();
-                    break;
-                case "3":
-                    MostrarArvorePessoa();
-                    break;
-                default:
-                    Console.WriteLine("Opção inválida!");
-                    break;
-            }
+            if (op == "1")
+                Cadastrar();
+            else if (op == "2")
+                Listar();
+            else if (op == "3")
+                Mostrar();
         }
     }
 
-    static void CadastrarPessoa()
+    static void Cadastrar()
     {
         Console.Write("Nome: ");
         string nome = Console.ReadLine();
 
         Console.Write("Idade: ");
-        int idade = int.Parse(Console.ReadLine());
+        int idade;
+        int.TryParse(Console.ReadLine(), out idade);
 
-        Pessoa pessoa = new Pessoa(nome, idade);
+        Pessoa p = new Pessoa(nome, idade);
 
-        // Associar pai
         if (pessoas.Count > 0)
         {
             Console.Write("Tem pai cadastrado? (s/n): ");
-            string temPai = Console.ReadLine().ToLower();
-            if (temPai == "s")
+            string resp = Console.ReadLine();
+
+            if (resp == "s")
             {
-                ListarPessoas();
-                Console.Write("Escolha o índice do pai: ");
-                int paiIndex = int.Parse(Console.ReadLine());
-                if (paiIndex >= 0 && paiIndex < pessoas.Count)
-                    pessoa.Pai = pessoas[paiIndex];
+                Listar();
+                Console.Write("Indice do pai: ");
+                int i;
+                int.TryParse(Console.ReadLine(), out i);
+
+                if (i >= 0 && i < pessoas.Count)
+                    p.SetPai(pessoas[i]);
             }
 
-            // Associar mãe
-            Console.Write("Tem mãe cadastrada? (s/n): ");
-            string temMae = Console.ReadLine().ToLower();
-            if (temMae == "s")
+            Console.Write("Tem mae cadastrada? (s/n): ");
+            resp = Console.ReadLine();
+
+            if (resp == "s")
             {
-                ListarPessoas();
-                Console.Write("Escolha o índice da mãe: ");
-                int maeIndex = int.Parse(Console.ReadLine());
-                if (maeIndex >= 0 && maeIndex < pessoas.Count)
-                    pessoa.Mae = pessoas[maeIndex];
+                Listar();
+                Console.Write("Indice da mae: ");
+                int i;
+                int.TryParse(Console.ReadLine(), out i);
+
+                if (i >= 0 && i < pessoas.Count)
+                    p.SetMae(pessoas[i]);
             }
         }
 
-        pessoas.Add(pessoa);
-        Console.WriteLine($"Pessoa '{pessoa.Nome}' cadastrada!");
+        pessoas.Add(p);
+        Console.WriteLine("Pessoa cadastrada.");
     }
 
-    static void ListarPessoas()
+    static void Listar()
     {
         if (pessoas.Count == 0)
         {
@@ -119,14 +123,14 @@ class Programa
             return;
         }
 
-        Console.WriteLine("Pessoas cadastradas:");
         for (int i = 0; i < pessoas.Count; i++)
         {
-            Console.WriteLine($"{i} - {pessoas[i].Nome} ({pessoas[i].Idade} anos)");
+            Console.WriteLine(i + " - " + pessoas[i].Nome() +
+                              " (" + pessoas[i].Idade() + " anos)");
         }
     }
 
-    static void MostrarArvorePessoa()
+    static void Mostrar()
     {
         if (pessoas.Count == 0)
         {
@@ -134,18 +138,15 @@ class Programa
             return;
         }
 
-        ListarPessoas();
-        Console.Write("Escolha o índice da pessoa: ");
-        int index = int.Parse(Console.ReadLine());
+        Listar();
+        Console.Write("Indice da pessoa: ");
+        int i;
+        int.TryParse(Console.ReadLine(), out i);
 
-        if (index >= 0 && index < pessoas.Count)
+        if (i >= 0 && i < pessoas.Count)
         {
-            Console.WriteLine("\nÁrvore genealógica:");
-            pessoas[index].MostrarArvore();
-        }
-        else
-        {
-            Console.WriteLine("Pessoa inválida!");
+            Console.WriteLine("\nArvore genealogica:");
+            pessoas[i].MostrarArvore(0);
         }
     }
 }
