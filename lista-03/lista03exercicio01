@@ -1,25 +1,63 @@
-class Veiculo
-{
-	int quantOcupantes;
-	int quantRodas;
-	double capacdTanque;
-	double nivelTanquePerc;
-	double consumo;
-	double kmAtual;
-	
-	Veiculo(int quantOcupantes, int quantRodas, double capacdTanque, double nivelTanquePerc, double consumo, double kmAtual)
-	{
-		this.quantOcupantes = quantOcupantes;
-		this.quantRodas = quantRodas;
-		this.capacdTanque = capacdTanque;
-		this.nivelTanquePerc = nivelTanquePerc;
-		this.consumo = consumo;
-		this.kmAtual = kmAtual;
-	}
-	
-	double calculoAutonomia()
-	{
-		double litDispon = capacdTanque * (nivelTanque / 100.0);
-		return litDispon * consumo;
-	}
+using System;
+
+class Veiculo {
+    public int Ocupantes;
+    public int Rodas;
+    public float CapMaximaTanque;
+    public float NivelTanquePercentual;
+    public float ConsumoMedio;
+    private float quilometragemAtual;
+
+    public float GetQuilometragem() {
+        return quilometragemAtual;
+    }
+
+    public void SetQuilometragem(float km) {
+        if (km <= 999999) {
+            this.quilometragemAtual = km;
+        }
+    }
+
+    public float GetConsumoMedio() {
+        return ConsumoMedio;
+    }
+
+    public void SetConsumoMedio(float consumo) {
+        this.ConsumoMedio = consumo;
+    }
+
+    public float Autonomia() {
+        float litros = (NivelTanquePercentual / 100) * CapMaximaTanque;
+        return litros * ConsumoMedio;
+    }
+}
+
+class Carro : Veiculo {
+    public string Modelo;
+    public int QtdPortas;
+
+    public Carro() { }
+
+    public Carro(int ocupantes, int rodas, float capTanque, float nivel, float consumo, float km, string modelo, int portas) {
+        this.Ocupantes = ocupantes;
+        this.Rodas = rodas;
+        this.CapMaximaTanque = capTanque;
+        this.NivelTanquePercentual = nivel;
+        this.ConsumoMedio = consumo;
+        this.SetQuilometragem(km);
+        this.Modelo = modelo;
+        this.QtdPortas = portas;
+    }
+
+    public float Percorrer(float qtdQuilometros) {
+        float novaKM = GetQuilometragem() + qtdQuilometros;
+        
+        if (novaKM > 999999) {
+            SetQuilometragem(999999);
+        } else {
+            SetQuilometragem(novaKM);
+        }
+
+        return GetQuilometragem();
+    }
 }
