@@ -1,0 +1,63 @@
+using System;
+
+class CorpoCeleste {
+    private double massa;
+    private double densidade;
+    private double posX;
+    private double posY;
+
+    public CorpoCeleste(double m, double d, double x, double y) {
+        massa = m;
+        densidade = d;
+        posX = x;
+        posY = y;
+    }
+
+    public double GetMassa() => massa;
+    public double GetPosX() => posX;
+
+    public double CalcularRaio() {
+        return Math.Pow((massa / densidade), 1.0/3.0);
+    }
+}
+
+class Program {
+    static void Main() {
+        CorpoCeleste[] corpos = new CorpoCeleste[10];
+
+        for (int i = 0; i < 10; i++) {
+            Console.WriteLine("Digite os dados do corpo " + (i + 1));
+            corpos[i] = new CorpoCeleste(i * 120, i + 1.5, i * 10, 0); 
+        }
+
+        CorpoCeleste m_massa = corpos[0];
+        CorpoCeleste m_raio = corpos[0];
+
+        for (int i = 1; i < 10; i++) {
+            if (corpos[i].GetMassa() > m_massa.GetMassa())
+                m_massa = corpos[i];
+
+            if (corpos[i].CalcularRaio() > m_raio.CalcularRaio())
+                m_raio = corpos[i];
+        }
+
+        CorpoCeleste c1 = corpos[0];
+        CorpoCeleste c2 = corpos[0];
+        double maiorD = 0;
+
+        for (int i = 0; i < 10; i++) {
+            for (int j = i + 1; j < 10; j++) {
+                double d = Math.Abs(corpos[i].GetPosX() - corpos[j].GetPosX());
+                if (d > maiorD) {
+                    maiorD = d;
+                    c1 = corpos[i];
+                    c2 = corpos[j];
+                }
+            }
+        }
+
+        Console.WriteLine("Maior massa: " + m_massa.GetMassa());
+        Console.WriteLine("Maior raio: " + m_raio.CalcularRaio());
+        Console.WriteLine("Mais distantes: " + c1.GetPosX() + " e " + c2.GetPosX());
+    }
+}
