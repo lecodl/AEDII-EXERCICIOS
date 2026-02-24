@@ -1,0 +1,128 @@
+using System;
+using System.Collections.Generic;
+
+class Livro
+{
+    int id;
+    string titulo;
+    bool disponivel;
+
+    internal Livro(int i, string t)
+    {
+        id = i;
+        titulo = t;
+        disponivel = true;
+    }
+
+    internal int GetId() { return id; }
+    internal string GetTitulo() { return titulo; }
+    internal bool EstaDisponivel() { return disponivel; }
+    internal void Emprestar() { disponivel = false; }
+    internal void Devolver() { disponivel = true; }
+}
+
+class Pessoa
+{
+    int id;
+    string nome;
+
+    internal Pessoa(int i, string n)
+    {
+        id = i;
+        nome = n;
+    }
+
+    internal int GetId() { return id; }
+    internal string GetNome() { return nome; }
+}
+
+class Emprestimo
+{
+    internal void Registrar(Livro l, Pessoa p)
+    {
+        Console.WriteLine("Livro " + l.GetTitulo() + 
+                          " emprestado para " + p.GetNome());
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        List<Livro> livros = new List<Livro>();
+        List<Pessoa> pessoas = new List<Pessoa>();
+        Emprestimo emp = new Emprestimo();
+
+        int op;
+
+        while (true)
+        {
+            Console.WriteLine("\n1-Cadastrar Livro");
+            Console.WriteLine("2-Cadastrar Pessoa");
+            Console.WriteLine("3-Emprestar Livro");
+            Console.WriteLine("4-Devolver Livro");
+
+            int.TryParse(Console.ReadLine(), out op);
+
+            if (op == 1)
+            {
+                Console.Write("Id: ");
+                int id;
+                int.TryParse(Console.ReadLine(), out id);
+
+                Console.Write("Titulo: ");
+                string t = Console.ReadLine();
+
+                livros.Add(new Livro(id, t));
+            }
+            else if (op == 2)
+            {
+                Console.Write("Id: ");
+                int id;
+                int.TryParse(Console.ReadLine(), out id);
+
+                Console.Write("Nome: ");
+                string n = Console.ReadLine();
+
+                pessoas.Add(new Pessoa(id, n));
+            }
+            else if (op == 3)
+            {
+                Console.Write("Id livro: ");
+                int idLivro;
+                int.TryParse(Console.ReadLine(), out idLivro);
+
+                Console.Write("Id pessoa: ");
+                int idPessoa;
+                int.TryParse(Console.ReadLine(), out idPessoa);
+
+                Livro l = livros.Find(x => x.GetId() == idLivro);
+                Pessoa p = pessoas.Find(x => x.GetId() == idPessoa);
+
+                if (l != null && p != null && l.EstaDisponivel())
+                {
+                    l.Emprestar();
+                    emp.Registrar(l, p);
+                }
+                else
+                {
+                    Console.WriteLine("Erro.");
+                }
+            }
+            else if (op == 4)
+            {
+                Console.Write("Id livro: ");
+                int idLivro;
+                int.TryParse(Console.ReadLine(), out idLivro);
+
+                Livro l = livros.Find(x => x.GetId() == idLivro);
+
+                if (l != null)
+                {
+                    l.Devolver();
+                    Console.WriteLine("Livro devolvido.");
+                }
+            }
+        }
+    }
+}
