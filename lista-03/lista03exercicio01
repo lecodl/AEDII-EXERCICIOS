@@ -1,63 +1,104 @@
 using System;
 
-class Veiculo {
-    public int Ocupantes;
-    public int Rodas;
-    public float CapMaximaTanque;
-    public float NivelTanquePercentual;
-    public float ConsumoMedio;
-    private float quilometragemAtual;
+class Veiculo
+{
+    int ocupantes;
+    int rodas;
+    float capMaximaTanque;
+    float nivelTanquePercentual;
+    float consumoMedio;
+    float quilometragemAtual;
 
-    public float GetQuilometragem() {
+    internal int GetOcupantes() { return ocupantes; }
+    internal void SetOcupantes(int o) { ocupantes = o; }
+
+    internal int GetRodas() { return rodas; }
+    internal void SetRodas(int r) { rodas = r; }
+
+    internal float GetCapMaximaTanque() { return capMaximaTanque; }
+    internal void SetCapMaximaTanque(float c) { capMaximaTanque = c; }
+
+    internal float GetNivelTanquePercentual() { return nivelTanquePercentual; }
+    internal void SetNivelTanquePercentual(float n) { nivelTanquePercentual = n; }
+
+    internal float GetQuilometragem()
+    {
         return quilometragemAtual;
     }
 
-    public void SetQuilometragem(float km) {
-        if (km <= 999999) {
-            this.quilometragemAtual = km;
-        }
+    internal void SetQuilometragem(float km)
+    {
+        if (km <= 999999)
+            quilometragemAtual = km;
     }
 
-    public float GetConsumoMedio() {
-        return ConsumoMedio;
+    internal float GetConsumoMedio()
+    {
+        return consumoMedio;
     }
 
-    public void SetConsumoMedio(float consumo) {
-        this.ConsumoMedio = consumo;
+    internal void SetConsumoMedio(float consumo)
+    {
+        consumoMedio = consumo;
     }
 
-    public float Autonomia() {
-        float litros = (NivelTanquePercentual / 100) * CapMaximaTanque;
-        return litros * ConsumoMedio;
+    internal float Autonomia()
+    {
+        float litros = (nivelTanquePercentual / 100) * capMaximaTanque;
+        return litros * consumoMedio;
     }
 }
 
-class Carro : Veiculo {
-    public string Modelo;
-    public int QtdPortas;
+class Carro : Veiculo
+{
+    string modelo;
+    int qtdPortas;
 
-    public Carro() { }
+    internal Carro() { }
 
-    public Carro(int ocupantes, int rodas, float capTanque, float nivel, float consumo, float km, string modelo, int portas) {
-        this.Ocupantes = ocupantes;
-        this.Rodas = rodas;
-        this.CapMaximaTanque = capTanque;
-        this.NivelTanquePercentual = nivel;
-        this.ConsumoMedio = consumo;
-        this.SetQuilometragem(km);
-        this.Modelo = modelo;
-        this.QtdPortas = portas;
+    internal Carro(int ocupantes, int rodas, float capTanque, float nivel,
+                   float consumo, float km, string modelo, int portas)
+    {
+        SetOcupantes(ocupantes);
+        SetRodas(rodas);
+        SetCapMaximaTanque(capTanque);
+        SetNivelTanquePercentual(nivel);
+        SetConsumoMedio(consumo);
+        SetQuilometragem(km);
+
+        this.modelo = modelo;
+        this.qtdPortas = portas;
     }
 
-    public float Percorrer(float qtdQuilometros) {
+    internal string GetModelo() { return modelo; }
+    internal int GetQtdPortas() { return qtdPortas; }
+
+    internal float Percorrer(float qtdQuilometros)
+    {
         float novaKM = GetQuilometragem() + qtdQuilometros;
-        
-        if (novaKM > 999999) {
+
+        if (novaKM > 999999)
             SetQuilometragem(999999);
-        } else {
+        else
             SetQuilometragem(novaKM);
-        }
 
         return GetQuilometragem();
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Carro carro = new Carro(5, 4, 50, 80, 12, 10000, "Civic", 4);
+
+        Console.WriteLine("Modelo: " + carro.GetModelo());
+        Console.WriteLine("Portas: " + carro.GetQtdPortas());
+        Console.WriteLine("Quilometragem: " + carro.GetQuilometragem());
+        Console.WriteLine("Autonomia: " + carro.Autonomia());
+
+        carro.Percorrer(200);
+
+        Console.WriteLine("Quilometragem após percorrer 200 km: " + carro.GetQuilometragem());
     }
 }
